@@ -188,21 +188,37 @@ if run:
 
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    # Dark background
-    fig.patch.set_facecolor("#0e1117")
-    ax.set_facecolor("#0e1117")
+    # Light background (match app)
+    fig.patch.set_facecolor("#FFF7DD")
+    ax.set_facecolor("#FFFFFF")
 
-    ax.plot(result["convergence"], linewidth=2.5, color="#4da3ff")
+    # Plot line
+    ax.plot(
+         result["convergence"],
+        linewidth=2.5,
+        color="#80A1BA"  # soft blue from your palette
+    )
 
-    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.3)
-    ax.tick_params(colors="white")
-    ax.spines["bottom"].set_color("white")
-    ax.spines["left"].set_color("white")
+    # Grid (light, subtle)
+    ax.grid(
+        True,
+        linestyle="--",
+        linewidth=0.6,
+        alpha=0.4
+    )
+
+    # Axis labels
+    ax.set_xlabel("Iterations", color="#24333A")
+    ax.set_ylabel("Best Fitness", color="#24333A")
+
+    # Ticks
+    ax.tick_params(colors="#24333A")
+
+    # Clean spines
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
-
-    ax.set_xlabel("Iterations", color="white")
-    ax.set_ylabel("Best Fitness", color="white")
+    ax.spines["left"].set_color("#80A1BA")
+    ax.spines["bottom"].set_color("#80A1BA")
 
     st.pyplot(fig)
 
