@@ -38,6 +38,15 @@ def load_data():
 
 exams, rooms = load_data()
 
+# ================= Timeslot Configuration =================
+TIMESLOT_LABELS = [
+    "09:00 AM", "10:00 AM", "11:00 AM",
+    "12:00 PM", "01:00 PM", "02:00 PM",
+    "03:00 PM", "04:00 PM"
+]
+
+num_timeslots = len(TIMESLOT_LABELS)
+
 # ================= Dataset Overview =================
 st.subheader("📊 Dataset Overview")
 
@@ -224,13 +233,7 @@ if run:
     # -------- Text-style Timetable --------
     st.subheader("🗓️ Final Exam Schedule")
 
-    TIMESLOT_LABELS = [
-        "09:00 AM", "10:00 AM", "11:00 AM",
-        "12:00 PM", "01:00 PM", "02:00 PM",
-        "03:00 PM", "04:00 PM"
-    ]
-
-    num_timeslots = len(TIMESLOT_LABELS)
+    timeslot_labels = TIMESLOT_LABELS
 
     days = exams["exam_day"].unique()
 
@@ -261,9 +264,9 @@ if run:
                     f"[{room['room_type']}]"
                 )
 
-                schedule[TIMESLOT_LABELS[ts]].append(entry)
+                schedule[timeslot_labels[ts]].append(entry)
 
-            for time in TIMESLOT_LABELS:
+            for time in timeslot_labels:
                 st.markdown(f"**Time Slot {time}**")
                 if not schedule[time]:
                     st.write("  - Free")
