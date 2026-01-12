@@ -134,7 +134,6 @@ if run:
             rooms,
             num_particles,
             iterations,
-            num_timeslots,
             w,
             c1,
             c2
