@@ -39,6 +39,18 @@ with st.expander("View dataset summary", expanded=True):
         st.write(f"Min: {exams['num_students'].min()}")
         st.write(f"Max: {exams['num_students'].max()}")
         st.write(f"Average: {exams['num_students'].mean():.1f}")
+         
+    # -------- Raw Tables (BOTTOM of expander) --------
+    st.markdown("---")  # visual separator
+    st.markdown("### 📄 Raw Dataset Tables")
+
+    show_exams = st.checkbox("Show exams table")
+    if show_exams:
+        st.dataframe(exams, use_container_width=True)
+
+    show_rooms = st.checkbox("Show rooms table")
+    if show_rooms:
+        st.dataframe(rooms, use_container_width=True)
 
     # ---- Rooms Overview ----
     with col2:
