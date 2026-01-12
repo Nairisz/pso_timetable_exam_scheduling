@@ -1,9 +1,9 @@
 /* =========================
-   LIGHT MODE (default)
+   LIGHT MODE (TRUE LIGHT)
    ========================= */
 
 .stApp {
-    background-color: #F2F4F3;
+    background-color: #F7F9FA;
     color: #24333A;
 }
 
@@ -11,13 +11,13 @@
 section[data-testid="stSidebar"] {
     background-color: #FFFFFF;
     color: #24333A;
-    border-right: 1px solid #80A1BA;
+    border-right: 1px solid #D6E4EA;
 }
 
-/* Metric cards */
+/* Cards / metrics */
 div[data-testid="metric-container"] {
     background-color: #FFFFFF;
-    border: 1px solid #80A1BA;
+    border: 1px solid #D6E4EA;
     padding: 15px;
     border-radius: 12px;
 }
@@ -30,89 +30,4 @@ h1, h2, h3, h4 {
 /* Buttons */
 button[kind="primary"] {
     background-color: #91C4C3;
-    color: #1E3338;
-    border-radius: 10px;
-    border: none;
-    font-weight: 600;
-}
-
-button[kind="primary"]:hover {
-    background-color: #80A1BA;
-    color: #1E3338;
-}
-
-/* Expander */
-details {
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    padding: 8px;
-    border: 1px solid #80A1BA;
-}
-
-/* Tables */
-.stDataFrame {
-    background-color: #FFFFFF;
-    color: #24333A;
-}
-
-
-/* =========================
-   DARK MODE
-   ========================= */
-
-@media (prefers-color-scheme: dark) {
-
-    .stApp {
-        background-color: #1C2A2F;
-        color: #E6F2EF;
-    }
-
-    section[data-testid="stSidebar"] {
-        background-color: #22373B;
-        color: #E6F2EF;
-    }
-
-    div[data-testid="metric-container"] {
-        background-color: #22373B;
-        border: 1px solid #80A1BA;
-    }
-
-    h1, h2, h3, h4 {
-        color: #B4DEBD;
-    }
-
-    p, li, span, label {
-        color: #E6F2EF;
-    }
-
-    button[kind="primary"] {
-        background-color: #91C4C3;
-        color: #1C2A2F;
-    }
-
-    button[kind="primary"]:hover {
-        background-color: #80A1BA;
-        color: #1C2A2F;
-    }
-
-    details {
-        background-color: #22373B;
-        border: 1px solid #80A1BA;
-    }
-
-    .stDataFrame {
-        background-color: #1C2A2F;
-        color: #E6F2EF;
-    }
-
-    thead tr th {
-        background-color: #22373B !important;
-        color: #B4DEBD !important;
-    }
-
-    input, textarea {
-        background-color: #22373B !important;
-        color: #E6F2EF !important;
-        border: 1px solid #80A1BA !important;
-    }
-}
+    color: #1E
