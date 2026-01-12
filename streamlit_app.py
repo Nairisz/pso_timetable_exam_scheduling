@@ -92,6 +92,9 @@ with st.expander("View dataset summary", expanded=True):
         for rtype, count in room_type_counts.items():
             st.write(f"• {rtype}: {count}")
 
+        total_seats = rooms['capacity'].sum()
+        st.write(f"**Total Seats Available:** {total_seats}")
+
         st.markdown("**Room Capacity**")
         st.write(f"Min: {rooms['capacity'].min()}")
         st.write(f"Max: {rooms['capacity'].max()}")
