@@ -1,58 +1,48 @@
+/* Main background */
 .stApp {
     background-color: #F3F9F4;
 }
-st.markdown(
-    """
-    <style>
-    /* Main background */
-    .stApp {
-        background-color: #F3F9F4;
-    }
 
-    /* Sidebar */
-    section[data-testid="stSidebar"] {
-        background-color: #E6F4EA;
-    }
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #E6F4EA;
+}
 
-    /* Metric cards */
-    div[data-testid="metric-container"] {
-        background-color: #E6F4EA;
-        border: 1px solid #CFE8D8;
-        padding: 15px;
-        border-radius: 12px;
-    }
+/* Metric cards */
+div[data-testid="metric-container"] {
+    background-color: #E6F4EA;
+    border: 1px solid #CFE8D8;
+    padding: 15px;
+    border-radius: 12px;
+}
 
-    /* Headings */
-    h1, h2, h3, h4 {
-        color: #2F5D50;
-    }
+/* Headings */
+h1, h2, h3, h4 {
+    color: #2F5D50;
+}
 
-    /* Buttons */
-    button[kind="primary"] {
-        background-color: #8BC9A4;
-        color: #1F3D34;
-        border-radius: 10px;
-        border: none;
-    }
+/* Buttons */
+button[kind="primary"] {
+    background-color: #8BC9A4;
+    color: #1F3D34;
+    border-radius: 10px;
+    border: none;
+}
 
-    button[kind="primary"]:hover {
-        background-color: #7BBE96;
-        color: #1F3D34;
-    }
+button[kind="primary"]:hover {
+    background-color: #7BBE96;
+    color: #1F3D34;
+}
 
-    /* Expander */
-    details {
-        background-color: #E6F4EA;
-        border-radius: 10px;
-        padding: 8px;
-        border: 1px solid #CFE8D8;
-    }
+/* Expander */
+details {
+    background-color: #E6F4EA;
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px solid #CFE8D8;
+}
 
-    /* Tables */
-    .stDataFrame {
-        background-color: #F3F9F4;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+/* Tables */
+.stDataFrame {
+    background-color: #F3F9F4;
+}
