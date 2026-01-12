@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from pso_core import run_pso
-from your_fitness_file import fitness_multiobj  # import your fitness
+from pso_core import run_pso  # import your fitness
 
 st.set_page_config(page_title="PSO Exam Scheduling Dashboard", layout="wide")
 
