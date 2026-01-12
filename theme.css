@@ -1,76 +1,83 @@
 /* =========================
-   DARK MODE ONLY THEME
-   Palette-based
+   BRIGHT PASTEL LIGHT THEME
    ========================= */
 
 /* App background */
 .stApp {
-    background-color: #1E2F34;
-    color: #FFF7DD;
+    background-color: #FFF7DD;
+    color: #24333A;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #243A40;
-    color: #FFF7DD;
-    border-right: 1px solid #80A1BA;
+    background-color: #B4DEBD;
+    color: #24333A;
+    border-right: 2px solid #80A1BA;
 }
 
 /* Headings */
 h1, h2, h3, h4 {
-    color: #B4DEBD;
+    color: #355F6B;
 }
 
 /* Normal text */
 p, li, span, label {
-    color: #FFF7DD;
+    color: #24333A;
 }
 
 /* Metric cards */
 div[data-testid="metric-container"] {
-    background-color: #243A40;
-    border: 1px solid #80A1BA;
-    padding: 15px;
-    border-radius: 12px;
+    background-color: #FFFFFF;
+    border: 2px solid #B4DEBD;
+    padding: 16px;
+    border-radius: 14px;
 }
 
 /* Buttons */
 button[kind="primary"] {
     background-color: #91C4C3;
-    color: #1E2F34;
-    border-radius: 10px;
+    color: #1E3338;
+    border-radius: 12px;
     border: none;
     font-weight: 600;
 }
 
 button[kind="primary"]:hover {
     background-color: #80A1BA;
-    color: #1E2F34;
+    color: #1E3338;
+}
+
+/* Sliders */
+div[data-baseweb="slider"] > div {
+    color: #91C4C3;
 }
 
 /* Expanders */
 details {
-    background-color: #243A40;
-    border-radius: 10px;
-    padding: 8px;
-    border: 1px solid #80A1BA;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 10px;
+    border: 2px solid #B4DEBD;
 }
 
 /* Tables */
 .stDataFrame {
-    background-color: #1E2F34;
-    color: #FFF7DD;
+    background-color: #FFFFFF;
+    color: #24333A;
+    border-radius: 12px;
 }
 
 /* Table headers */
 thead tr th {
-    background-color: #243A40 !important;
-    color: #B4DEBD !important;
+    background-color: #B4DEBD !important;
+    color: #24333A !important;
+    font-weight: 600;
 }
 
-/* Inputs & sliders */
+/* Inputs */
 input, textarea {
-    background-color: #243A40 !important;
-    color: #FFF7DD !important;
-    border: 1px solid #80A1BA !important;
+    background-color: #FFFFFF !important;
+    color: #24333A !important;
+    border: 2px solid #80A1BA !important;
+    border-radius: 8px;
 }
