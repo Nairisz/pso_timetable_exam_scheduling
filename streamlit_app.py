@@ -143,15 +143,32 @@ if run:
 
     st.success("Optimization completed")
 
+    # -------- Convergence Speed (numeric) --------
+    curve = np.array(result["convergence"])
+
+    start_fitness = curve[0]
+    final_fitness = curve[-1]
+
+    # 95% improvement threshold
+    target_fitness = final_fitness + 0.05 * (start_fitness - final_fitness)
+
+    convergence_iteration = next(
+        (i for i, f in enumerate(curve) if f <= target_fitness),
+            len(curve)
+    )
+
     total_seconds = int(result["runtime"])
     minutes = total_seconds // 60
     seconds = total_seconds % 60
     formatted_runtime = f"{minutes} min {seconds:02d} sec"
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Best Fitness", f"{result['fitness']:.2f}")
+    col1, col2, col3, col4 = st.columns(4)
+
+    col1.metric("Final Cost", f"{result['fitness']:.2f}")
     col2.metric("Accuracy", f"{result['accuracy']*100:.2f}%")
     col3.metric("Runtime", formatted_runtime)
+c    ol4.metric("Convergence Iteration", convergence_iteration)
+
 
     # -------- Convergence --------
     # -------- Styled Convergence Curve --------
@@ -194,7 +211,35 @@ if run:
     st.subheader("🗓️ Final Exam Schedule")
 
     solution = result["solution"]
+    capacity_violations = 0
 
+for i in range(len(exams)):
+    ts = int(np.clip(round(solution[2*i]), 0, num_timeslots - 1))
+    rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
+
+    students = exams.iloc[i]["num_students"]
+    capacity = rooms.iloc[rm]["capacity"]
+
+    if students > capacity:
+        capacity_violations += 1
+
+    total_wasted_capacity = 0
+    total_capacity_used = 0
+
+for i in range(len(exams)):
+    rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
+
+    students = exams.iloc[i]["num_students"]
+    capacity = rooms.iloc[rm]["capacity"]
+
+    total_capacity_used += students
+
+    if capacity > students:
+        total_wasted_capacity += (capacity - students)
+
+wasted_capacity_ratio = total_wasted_capacity / (total_capacity_used + total_wasted_capacity)
+
+    
     timeslot_labels = [
         "09:00 AM", "10:00 AM", "11:00 AM",
         "12:00 PM", "01:00 PM", "02:00 PM",
