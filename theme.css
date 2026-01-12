@@ -3,19 +3,20 @@
    ========================= */
 
 .stApp {
-    background-color: #FFF7DD;
-    color: #2E3F4F;
+    background-color: #F2F4F3;
+    color: #24333A;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #B4DEBD;
-    color: #2E3F4F;
+    background-color: #FFFFFF;
+    color: #24333A;
+    border-right: 1px solid #80A1BA;
 }
 
 /* Metric cards */
 div[data-testid="metric-container"] {
-    background-color: #B4DEBD;
+    background-color: #FFFFFF;
     border: 1px solid #80A1BA;
     padding: 15px;
     border-radius: 12px;
@@ -23,7 +24,7 @@ div[data-testid="metric-container"] {
 
 /* Headings */
 h1, h2, h3, h4 {
-    color: #355F6B;
+    color: #2E5561;
 }
 
 /* Buttons */
@@ -42,7 +43,7 @@ button[kind="primary"]:hover {
 
 /* Expander */
 details {
-    background-color: #B4DEBD;
+    background-color: #FFFFFF;
     border-radius: 10px;
     padding: 8px;
     border: 1px solid #80A1BA;
@@ -50,8 +51,8 @@ details {
 
 /* Tables */
 .stDataFrame {
-    background-color: #FFF7DD;
-    color: #2E3F4F;
+    background-color: #FFFFFF;
+    color: #24333A;
 }
 
 
