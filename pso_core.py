@@ -106,6 +106,8 @@ def run_pso(
     c1,
     c2
 ):
+    np.random.seed(42)
+    random.seed(42)
     start_time = time.time()
 
     num_exams = len(exams)
