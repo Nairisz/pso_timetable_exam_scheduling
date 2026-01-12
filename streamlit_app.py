@@ -91,8 +91,7 @@ with st.expander("View dataset summary", expanded=True):
 # ================= Sidebar =================
 st.sidebar.header("⚙️ Parameters")
 num_particles = st.sidebar.slider("Particles", 10, 200, 50, 10)
-iterations = st.sidebar.slider("Iterations", 50, 350, 200, 50)
-num_timeslots = st.sidebar.slider("Timeslots", 3, 8, 5)
+iterations = st.sidebar.slider("Iterations", 50, 350, 50, 50)
 w = st.sidebar.slider(
     "Inertia Weight (w)",
     min_value=0.1,
@@ -106,7 +105,7 @@ c1 = st.sidebar.slider(
     "Cognitive Coefficient (c1)",
     min_value=0.5,
     max_value=3.0,
-    value=2.0,
+    value=1.5,
     step=0.1,
     help="Influence of particle's personal best."
 )
@@ -115,7 +114,7 @@ c2 = st.sidebar.slider(
     "Social Coefficient (c2)",
     min_value=0.5,
     max_value=3.0,
-    value=1.2,
+    value=1.5,
     step=0.1,
     help="Influence of global best solution."
 )
@@ -168,6 +167,11 @@ if run:
     col2.metric("Accuracy", f"{result['accuracy']*100:.2f}%")
     col3.metric("Runtime", formatted_runtime)
     col4.metric("Convergence Iteration", convergence_iteration)
+    
+    left_spacer, col5, col6, right_spacer = st.columns([1, 2, 2, 1])
+    col5.metric("Capacity Violations", capacity_violations)
+    col6.metric("Wasted Capacity Ratio", f"{wasted_capacity_ratio*100:.2f}%")
+
 
     # -------- Styled Convergence Curve --------
     st.subheader("📉 Convergence Curve")
@@ -227,7 +231,9 @@ if run:
         "09:00 AM", "10:00 AM", "11:00 AM",
         "12:00 PM", "01:00 PM", "02:00 PM",
         "03:00 PM", "04:00 PM"
-    ][:num_timeslots]
+    ]
+
+    num_timeslots = len(timeslot_labels)
 
     days = exams["exam_day"].unique()
 
