@@ -71,34 +71,35 @@ days = exams["exam_day"].unique()
 
 for day in days:
     with st.expander(f"=== Exam Schedule for Day {day} ===", expanded=True):
-    schedule_map = set()
+        
+        schedule_map = set()
 
-    # Initialize empty structure
-    schedule = {t: [] for t in timeslot_labels}
+        # Initialize empty structure
+        schedule = {t: [] for t in timeslot_labels}
 
-    exams_day = exams[exams["exam_day"] == day]
+        exams_day = exams[exams["exam_day"] == day]
 
-    for _, row in exams_day.iterrows():
-        idx = exams[exams["exam_id"] == row["exam_id"]].index[0]
+        for _, row in exams_day.iterrows():
+            idx = exams[exams["exam_id"] == row["exam_id"]].index[0]
 
-        ts = int(np.clip(round(solution[2*idx]), 0, num_timeslots - 1))
-        rm = int(np.clip(round(solution[2*idx + 1]), 0, len(rooms) - 1))
+            ts = int(np.clip(round(solution[2*idx]), 0, num_timeslots - 1))
+            rm = int(np.clip(round(solution[2*idx + 1]), 0, len(rooms) - 1))
 
-        # Apply same repair logic
-        ts, rm = repair_solution(
-            ts, rm, idx, exams, rooms, num_timeslots, schedule_map
-        )
+            # Apply same repair logic
+            ts, rm = repair_solution(
+                ts, rm, idx, exams, rooms, num_timeslots, schedule_map
+            )
 
-        schedule_map.add((ts, rm))
+            schedule_map.add((ts, rm))
 
-        room = rooms.iloc[rm]
-        entry = (
-            f"{row['course_code']} ({row['exam_type']}) - "
-            f"{room['building_name']} {room['room_number']} "
-            f"[{room['room_type']}]"
-        )
+            room = rooms.iloc[rm]
+            entry = (
+                f"{row['course_code']} ({row['exam_type']}) - "
+                f"{room['building_name']} {room['room_number']} "
+                f"[{room['room_type']}]"
+            )
 
-        schedule[timeslot_labels[ts]].append(entry)
+            schedule[timeslot_labels[ts]].append(entry)
 
     # Render output
     for time in timeslot_labels:
