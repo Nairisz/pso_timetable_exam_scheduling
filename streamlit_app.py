@@ -28,8 +28,8 @@ exams, rooms = load_data()
 # =========================
 st.sidebar.header("⚙️ PSO Parameters")
 
-num_particles = st.sidebar.slider("Particles", 10, 200, 50, 10)
-iterations = st.sidebar.slider("Iterations", 50, 1000, 300, 50)
+num_particles = st.sidebar.slider("Particles", 10, 150, 50, 10)
+iterations = st.sidebar.slider("Iterations", 50, 400, 300, 50)
 num_timeslots = st.sidebar.slider("Timeslots", 3, 10, 5)
 
 w = st.sidebar.slider("w", 0.1, 1.2, 0.9, 0.1)
