@@ -167,10 +167,8 @@ if run:
     col1.metric("Final Cost", f"{result['fitness']:.2f}")
     col2.metric("Accuracy", f"{result['accuracy']*100:.2f}%")
     col3.metric("Runtime", formatted_runtime)
-c    ol4.metric("Convergence Iteration", convergence_iteration)
+    col4.metric("Convergence Iteration", convergence_iteration)
 
-
-    # -------- Convergence --------
     # -------- Styled Convergence Curve --------
     st.subheader("📉 Convergence Curve")
 
@@ -180,22 +178,9 @@ c    ol4.metric("Convergence Iteration", convergence_iteration)
     fig.patch.set_facecolor("#0e1117")
     ax.set_facecolor("#0e1117")
 
-    # Plot smooth line
-    ax.plot(
-        result["convergence"],
-        linewidth=2.5,
-        color="#4da3ff"
-    )
+    ax.plot(result["convergence"], linewidth=2.5, color="#4da3ff")
 
-    # Subtle grid
-    ax.grid(
-        True,
-        linestyle="--",
-        linewidth=0.5,
-        alpha=0.3
-    )
-
-    # Axis styling
+    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.3)
     ax.tick_params(colors="white")
     ax.spines["bottom"].set_color("white")
     ax.spines["left"].set_color("white")
@@ -206,40 +191,38 @@ c    ol4.metric("Convergence Iteration", convergence_iteration)
     ax.set_ylabel("Best Fitness", color="white")
 
     st.pyplot(fig)
-    
-    # -------- Text-style Timetable (Per Day) --------
-    st.subheader("🗓️ Final Exam Schedule")
 
+    # -------- Capacity & Utilization Metrics --------
     solution = result["solution"]
+
     capacity_violations = 0
-
-for i in range(len(exams)):
-    ts = int(np.clip(round(solution[2*i]), 0, num_timeslots - 1))
-    rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
-
-    students = exams.iloc[i]["num_students"]
-    capacity = rooms.iloc[rm]["capacity"]
-
-    if students > capacity:
-        capacity_violations += 1
-
     total_wasted_capacity = 0
     total_capacity_used = 0
 
-for i in range(len(exams)):
-    rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
+    for i in range(len(exams)):
+        rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
+        students = exams.iloc[i]["num_students"]
+        capacity = rooms.iloc[rm]["capacity"]
 
-    students = exams.iloc[i]["num_students"]
-    capacity = rooms.iloc[rm]["capacity"]
+        if students > capacity:
+            capacity_violations += 1
+        else:
+            total_wasted_capacity += (capacity - students)
 
-    total_capacity_used += students
+        total_capacity_used += students
 
-    if capacity > students:
-        total_wasted_capacity += (capacity - students)
+    wasted_capacity_ratio = (
+        total_wasted_capacity / (total_capacity_used + total_wasted_capacity)
+        if total_capacity_used > 0 else 0
+    )
 
-wasted_capacity_ratio = total_wasted_capacity / (total_capacity_used + total_wasted_capacity)
+    col5, col6 = st.columns(2)
+    col5.metric("Capacity Violations", capacity_violations)
+    col6.metric("Wasted Capacity Ratio", f"{wasted_capacity_ratio*100:.2f}%")
 
-    
+    # -------- Text-style Timetable --------
+    st.subheader("🗓️ Final Exam Schedule")
+
     timeslot_labels = [
         "09:00 AM", "10:00 AM", "11:00 AM",
         "12:00 PM", "01:00 PM", "02:00 PM",
@@ -249,7 +232,7 @@ wasted_capacity_ratio = total_wasted_capacity / (total_capacity_used + total_was
     days = exams["exam_day"].unique()
 
     for day in days:
-        with st.expander(f"Exam Schedule for Day {day} ", expanded=True):
+        with st.expander(f"Exam Schedule for Day {day}", expanded=True):
 
             schedule_map = set()
             schedule = {t: [] for t in timeslot_labels}
@@ -277,7 +260,6 @@ wasted_capacity_ratio = total_wasted_capacity / (total_capacity_used + total_was
 
                 schedule[timeslot_labels[ts]].append(entry)
 
-            # ✅ Render INSIDE expander
             for time in timeslot_labels:
                 st.markdown(f"**Time Slot {time}**")
                 if not schedule[time]:
