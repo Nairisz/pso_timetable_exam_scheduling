@@ -111,7 +111,7 @@ w = st.sidebar.slider(
     "Inertia Weight (w)",
     min_value=0.1,
     max_value=1.2,
-    value=0.9,
+    value=0.7,
     step=0.1,
     help="Controls momentum of particles. Higher = more exploration."
 )
