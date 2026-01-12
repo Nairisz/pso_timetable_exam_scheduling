@@ -16,8 +16,8 @@ st.title("📘 PSO-based Exam Timetabling System")
 # =========================
 @st.cache_data
 def load_data():
-    exams = pd.read_csv(exam_timeslot.csv")
-    rooms = pd.read_csv(classrooms.csv")
+    exams = ("exam_timeslot.csv")
+    rooms = ("classrooms.csv")
 
     exams.columns = exams.columns.str.strip().str.lower()
     rooms.columns = rooms.columns.str.strip().str.lower()
