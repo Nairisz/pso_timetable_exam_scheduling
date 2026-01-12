@@ -33,7 +33,6 @@ def repair_solution(timeslot, room, exam_idx, exams, rooms, num_timeslots, sched
         else:
             timeslot = (timeslot + 1) % num_timeslots
 
-    schedule_map.add((timeslot, room))
     return timeslot, room
 
 
@@ -44,47 +43,54 @@ def fitness_multiobj(solution, exams, rooms, num_timeslots):
     num_exams = len(exams)
     num_rooms = len(rooms)
 
-    penalty = 0
+    penalty_constraints = 0
     timeslot_set = set()
     room_usage = np.zeros(num_rooms)
     schedule_map = set()
 
     for i in range(num_exams):
-        timeslot = int(np.clip(round(solution[2*i]), 0, num_timeslots-1))
-        room = int(np.clip(round(solution[2*i+1]), 0, num_rooms-1))
-
-        timeslot, room = repair_solution(
-            timeslot, room, i, exams, rooms, num_timeslots, schedule_map
-        )
+        timeslot = int(np.clip(round(solution[2*i]), 0, num_timeslots - 1))
+        room = int(np.clip(round(solution[2*i + 1]), 0, num_rooms - 1))
 
         students = exams.iloc[i]["num_students"]
-        capacity = rooms.iloc[room]["capacity"]
         exam_type = exams.iloc[i]["exam_type"].lower()
         room_type = rooms.iloc[room]["room_type"].lower()
+        capacity = rooms.iloc[room]["capacity"]
 
-        if students > capacity:
-            penalty += 5
-        if exam_type == "practical" and "lab" not in room_type:
-            penalty += 3
-        if exam_type == "theory" and "lab" in room_type:
-            penalty += 2
+        needs_repair = (
+            students > capacity or
+            (exam_type == "practical" and "lab" not in room_type) or
+            (exam_type == "theory" and "lab" in room_type) or
+            ((timeslot, room) in schedule_map)
+        )
 
-        for j in range(i + 1, num_exams):
-            other_ts = int(np.clip(round(solution[2*j]), 0, num_timeslots-1))
-            other_room = int(np.clip(round(solution[2*j+1]), 0, num_rooms-1))
-            if timeslot == other_ts and room == other_room:
-                penalty += 10
-            elif timeslot == other_ts:
-                penalty += 2
+        if needs_repair:
+            timeslot, room = repair_solution(
+                timeslot, room, i, exams, rooms, num_timeslots, schedule_map
+            )
 
+        # penalties
+        if students > rooms.iloc[room]["capacity"]:
+            penalty_constraints += 5
+
+        if exam_type == "practical" and "lab" not in rooms.iloc[room]["room_type"].lower():
+            penalty_constraints += 3
+
+        if exam_type == "theory" and "lab" in rooms.iloc[room]["room_type"].lower():
+            penalty_constraints += 2
+
+        if (timeslot, room) in schedule_map:
+            penalty_constraints += 10
+
+        schedule_map.add((timeslot, room))
         timeslot_set.add(timeslot)
         room_usage[room] += students
 
     penalty_timeslot = 3 * len(timeslot_set)
     penalty_util = np.var(room_usage / np.sum(room_usage)) if np.sum(room_usage) > 0 else 0
 
-    total = penalty + penalty_timeslot + penalty_util
-    return total, penalty
+    total_fitness = penalty_constraints + penalty_timeslot + penalty_util
+    return total_fitness, penalty_constraints
 
 
 # =========================
@@ -112,7 +118,7 @@ def run_pso(
     for p in range(num_particles):
         for i in range(num_exams):
             particles[p][2*i] *= num_timeslots
-            particles[p][2*i+1] *= num_rooms
+            particles[p][2*i + 1] *= num_rooms
 
     pbest = particles.copy()
     pbest_fit = np.array([
@@ -129,7 +135,6 @@ def run_pso(
     for _ in range(iterations):
         for i in range(num_particles):
             r1, r2 = random.random(), random.random()
-
             velocities[i] = (
                 w * velocities[i]
                 + c1 * r1 * (pbest[i] - particles[i])
@@ -137,9 +142,7 @@ def run_pso(
             )
             particles[i] += velocities[i]
 
-            fit, _ = fitness_multiobj(
-                particles[i], exams, rooms, num_timeslots
-            )
+            fit, _ = fitness_multiobj(particles[i], exams, rooms, num_timeslots)
 
             if fit < pbest_fit[i]:
                 pbest[i] = particles[i].copy()
@@ -156,9 +159,9 @@ def run_pso(
     accuracy = max(0, 1 - violations / (num_exams * 10))
 
     return {
-        "best_solution": gbest,
-        "best_fitness": gbest_fit,
-        "convergence": convergence,
+        "solution": gbest,
+        "fitness": gbest_fit,
+        "accuracy": accuracy,
         "runtime": runtime,
-        "accuracy": accuracy
+        "convergence": convergence
     }
