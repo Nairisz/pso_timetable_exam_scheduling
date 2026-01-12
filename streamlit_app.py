@@ -7,6 +7,27 @@ from pso_core import run_pso, repair_solution
 st.set_page_config(layout="wide")
 st.title("📘 PSO Exam Timetabling Dashboard")
 
+st.markdown("---")
+
+with st.expander("ℹ️ About the Optimization (How PSO Works)", expanded=False):
+    st.markdown("""
+**Particle Swarm Optimization (PSO)** is a population-based optimization algorithm inspired by the collective
+behavior of swarms.
+
+In this system:
+- Each **particle** represents a possible exam timetable.
+- Particles move through the search space by learning from:
+  - their **own best solution** (cognitive component), and
+  - the **global best solution** found by the swarm (social component).
+
+### How to use this dashboard
+- Adjust the parameters on the left to explore different behaviors.
+- Click **Run PSO** to generate a timetable.
+- The **convergence curve** shows how the best solution improves over iterations.
+- Higher accuracy indicates better constraint satisfaction.
+- Runtime reflects the trade-off between solution quality and computation time.
+""")
+
 @st.cache_data
 def load_data():
     exams = pd.read_csv("exam_timeslot.csv")
