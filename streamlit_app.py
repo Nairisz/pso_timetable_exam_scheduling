@@ -58,29 +58,53 @@ if run:
     plt.grid(True)
     st.pyplot(fig)
 
-    # -------- Timetable --------
-    st.subheader("🗓️ Final Exam Timetable")
+    # -------- Text-style Timetable (Per Day) --------
+st.subheader("🗓️ Final Exam Schedule (Readable Format)")
 
-    labels = [
-        "09:00 AM", "10:00 AM", "11:00 AM",
-        "12:00 PM", "01:00 PM", "02:00 PM",
-        "03:00 PM", "04:00 PM"
-    ][:num_timeslots]
+timeslot_labels = [
+    "09:00 AM", "10:00 AM", "11:00 AM",
+    "12:00 PM", "01:00 PM", "02:00 PM",
+    "03:00 PM", "04:00 PM"
+][:num_timeslots]
 
-    solution = result["solution"]
+days = exams["exam_day"].unique()
+
+for day in days:
+    with st.expander(f"=== Exam Schedule for Day {day} ===", expanded=True):
     schedule_map = set()
 
-    for i in range(len(exams)):
-        ts = int(np.clip(round(solution[2*i]), 0, num_timeslots - 1))
-        rm = int(np.clip(round(solution[2*i + 1]), 0, len(rooms) - 1))
+    # Initialize empty structure
+    schedule = {t: [] for t in timeslot_labels}
 
-        ts, rm = repair_solution(ts, rm, i, exams, rooms, num_timeslots, schedule_map)
+    exams_day = exams[exams["exam_day"] == day]
+
+    for _, row in exams_day.iterrows():
+        idx = exams[exams["exam_id"] == row["exam_id"]].index[0]
+
+        ts = int(np.clip(round(solution[2*idx]), 0, num_timeslots - 1))
+        rm = int(np.clip(round(solution[2*idx + 1]), 0, len(rooms) - 1))
+
+        # Apply same repair logic
+        ts, rm = repair_solution(
+            ts, rm, idx, exams, rooms, num_timeslots, schedule_map
+        )
+
         schedule_map.add((ts, rm))
 
         room = rooms.iloc[rm]
-        st.write(
-            f"{labels[ts]} → "
-            f"{exams.iloc[i]['course_code']} "
-            f"({exams.iloc[i]['exam_type']}) | "
-            f"{room['building_name']} {room['room_number']} [{room['room_type']}]"
+        entry = (
+            f"{row['course_code']} ({row['exam_type']}) - "
+            f"{room['building_name']} {room['room_number']} "
+            f"[{room['room_type']}]"
         )
+
+        schedule[timeslot_labels[ts]].append(entry)
+
+    # Render output
+    for time in timeslot_labels:
+        st.markdown(f"**Time Slot {time}**")
+        if not schedule[time]:
+            st.write("  - Free")
+        else:
+            for exam in schedule[time]:
+                st.write(f"  - {exam}")
