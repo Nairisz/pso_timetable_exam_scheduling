@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
 from pso_core import run_pso
 from your_fitness_file import fitness_multiobj  # import your fitness
 
@@ -59,6 +58,7 @@ if run_button:
 
     # ===== Convergence Curve =====
     st.subheader("📉 Convergence Curve")
+    st.line_chart(results["Convergence"])
     fig, ax = plt.subplots()
     ax.plot(results["convergence"])
     ax.set_xlabel("Iteration")
