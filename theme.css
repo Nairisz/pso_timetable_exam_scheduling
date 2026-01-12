@@ -27,7 +27,7 @@ p, li, span, label {
 
 /* Metric cards */
 div[data-testid="metric-container"] {
-    background-color: #FFFFFF;
+    background-color: #F6FBF8;
     border: 2px solid #B4DEBD;
     padding: 16px;
     border-radius: 14px;
@@ -52,19 +52,18 @@ div[data-baseweb="slider"] > div {
     color: #91C4C3;
 }
 
-/* Expanders */
+/* Expanders (details blocks) */
 details {
-    background-color: #FFFFFF;
+    background-color: #F6FBF8;
     border-radius: 12px;
     padding: 10px;
     border: 2px solid #B4DEBD;
 }
 
-/* Tables */
+/* Data tables */
 .stDataFrame {
-    background-color: #FFFFFF;
+    background-color: #F6FBF8;
     color: #24333A;
-    border-radius: 12px;
 }
 
 /* Table headers */
