@@ -20,7 +20,7 @@ exams, rooms = load_data()
 # ================= Sidebar =================
 st.sidebar.header("⚙️ Parameters")
 num_particles = st.sidebar.slider("Particles", 10, 200, 50, 10)
-iterations = st.sidebar.slider("Iterations", 50, 350, 300, 50)
+iterations = st.sidebar.slider("Iterations", 50, 350, 200, 50)
 num_timeslots = st.sidebar.slider("Timeslots", 3, 8, 5)
 w = st.sidebar.slider("w", 0.1, 1.2, 0.9, 0.1)
 c1 = st.sidebar.slider("c1", 0.5, 3.0, 2.0, 0.1)
@@ -44,22 +44,55 @@ if run:
 
     st.success("Optimization completed")
 
+    total_seconds = int(result["runtime"])
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    formatted_runtime = f"{minutes} min {seconds:02d} sec"
+
     col1, col2, col3 = st.columns(3)
     col1.metric("Best Fitness", f"{result['fitness']:.2f}")
     col2.metric("Accuracy", f"{result['accuracy']*100:.2f}%")
-    col3.metric("Runtime (s)", f"{result['runtime']:.2f}")
+    col3.metric("Runtime", formatted_runtime)
 
     # -------- Convergence --------
+    # -------- Styled Convergence Curve --------
     st.subheader("📉 Convergence Curve")
-    fig = plt.figure()
-    plt.plot(result["convergence"])
-    plt.xlabel("Iteration")
-    plt.ylabel("Best Fitness")
-    plt.grid(True)
-    st.pyplot(fig)
 
+    fig, ax = plt.subplots(figsize=(10, 4))
+
+    # Dark background
+    fig.patch.set_facecolor("#0e1117")
+    ax.set_facecolor("#0e1117")
+
+    # Plot smooth line
+    ax.plot(
+        result["convergence"],
+        linewidth=2.5,
+        color="#4da3ff"
+    )
+
+    # Subtle grid
+    ax.grid(
+        True,
+        linestyle="--",
+        linewidth=0.5,
+        alpha=0.3
+    )
+
+    # Axis styling
+    ax.tick_params(colors="white")
+    ax.spines["bottom"].set_color("white")
+    ax.spines["left"].set_color("white")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.set_xlabel("Iterations", color="white")
+    ax.set_ylabel("Best Fitness", color="white")
+
+    st.pyplot(fig)
+    
     # -------- Text-style Timetable (Per Day) --------
-    st.subheader("🗓️ Final Exam Schedule (Readable Format)")
+    st.subheader("🗓️ Final Exam Schedule")
 
     solution = result["solution"]
 
@@ -72,7 +105,7 @@ if run:
     days = exams["exam_day"].unique()
 
     for day in days:
-        with st.expander(f"=== Exam Schedule for Day {day} ===", expanded=True):
+        with st.expander(f"Exam Schedule for Day {day} ", expanded=True):
 
             schedule_map = set()
             schedule = {t: [] for t in timeslot_labels}
