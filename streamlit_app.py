@@ -17,6 +17,44 @@ def load_data():
 
 exams, rooms = load_data()
 
+# ================= Dataset Overview =================
+st.subheader("📊 Dataset Overview")
+
+with st.expander("View dataset summary", expanded=True):
+
+    col1, col2 = st.columns(2)
+
+    # ---- Exams Overview ----
+    with col1:
+        st.markdown("### 📘 Exams Dataset")
+
+        st.write(f"**Total Exams:** {len(exams)}")
+        st.write(f"**Exam Days:** {exams['exam_day'].nunique()}")
+
+        exam_type_counts = exams['exam_type'].value_counts()
+        for etype, count in exam_type_counts.items():
+            st.write(f"• {etype}: {count}")
+
+        st.markdown("**Students per Exam**")
+        st.write(f"Min: {exams['num_students'].min()}")
+        st.write(f"Max: {exams['num_students'].max()}")
+        st.write(f"Average: {exams['num_students'].mean():.1f}")
+
+    # ---- Rooms Overview ----
+    with col2:
+        st.markdown("### 🏫 Rooms Dataset")
+
+        st.write(f"**Total Rooms:** {len(rooms)}")
+
+        room_type_counts = rooms['room_type'].value_counts()
+        for rtype, count in room_type_counts.items():
+            st.write(f"• {rtype}: {count}")
+
+        st.markdown("**Room Capacity**")
+        st.write(f"Min: {rooms['capacity'].min()}")
+        st.write(f"Max: {rooms['capacity'].max()}")
+        st.write(f"Average: {rooms['capacity'].mean():.1f}")
+
 # ================= Sidebar =================
 st.sidebar.header("⚙️ Parameters")
 num_particles = st.sidebar.slider("Particles", 10, 200, 50, 10)
