@@ -178,7 +178,7 @@ if run:
 
     col1, col2, col3, col4 = st.columns(4)
 
-    col1.metric("Final Cost", f"{result['fitness']:.2f}")
+    col1.metric("Best Fitness", f"{result['fitness']:.2f}")
     col2.metric("Accuracy", f"{result['accuracy']*100:.2f}%")
     col3.metric("Runtime", formatted_runtime)
     col4.metric("Convergence Iteration", convergence_iteration)
