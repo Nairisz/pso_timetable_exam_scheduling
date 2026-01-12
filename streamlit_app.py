@@ -22,9 +22,37 @@ st.sidebar.header("⚙️ Parameters")
 num_particles = st.sidebar.slider("Particles", 10, 200, 50, 10)
 iterations = st.sidebar.slider("Iterations", 50, 350, 200, 50)
 num_timeslots = st.sidebar.slider("Timeslots", 3, 8, 5)
-w = st.sidebar.slider("w", 0.1, 1.2, 0.9, 0.1)
-c1 = st.sidebar.slider("c1", 0.5, 3.0, 2.0, 0.1)
-c2 = st.sidebar.slider("c2", 0.5, 3.0, 1.2, 0.1)
+w = st.sidebar.slider(
+    "Inertia Weight (w)",
+    min_value=0.1,
+    max_value=1.2,
+    value=0.9,
+    step=0.1,
+    help="Controls momentum of particles. Higher = more exploration."
+)
+
+c1 = st.sidebar.slider(
+    "Cognitive Coefficient (c1)",
+    min_value=0.5,
+    max_value=3.0,
+    value=2.0,
+    step=0.1,
+    help="Influence of particle's personal best."
+)
+
+c2 = st.sidebar.slider(
+    "Social Coefficient (c2)",
+    min_value=0.5,
+    max_value=3.0,
+    value=1.2,
+    step=0.1,
+    help="Influence of global best solution."
+)
+
+st.sidebar.caption(
+    "Tip: Lower inertia = faster convergence, "
+    "higher inertia = wider exploration."
+)
 
 run = st.sidebar.button("🚀 Run PSO")
 
