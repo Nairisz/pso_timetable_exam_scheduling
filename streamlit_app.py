@@ -134,6 +134,7 @@ if run:
             rooms,
             num_particles,
             iterations,
+            num_timeslots,
             w,
             c1,
             c2
@@ -219,20 +220,17 @@ if run:
         if total_capacity_used > 0 else 0
     )
 
-    col5, col6 = st.columns(2)
-    col5.metric("Capacity Violations", capacity_violations)
-    col6.metric("Wasted Capacity Ratio", f"{wasted_capacity_ratio*100:.2f}%")
 
     # -------- Text-style Timetable --------
     st.subheader("🗓️ Final Exam Schedule")
 
-    timeslot_labels = [
+    TIMESLOT_LABELS = [
         "09:00 AM", "10:00 AM", "11:00 AM",
         "12:00 PM", "01:00 PM", "02:00 PM",
         "03:00 PM", "04:00 PM"
     ]
 
-    num_timeslots = len(timeslot_labels)
+    num_timeslots = len(TIMESLOT_LABELS)
 
     days = exams["exam_day"].unique()
 
@@ -263,9 +261,9 @@ if run:
                     f"[{room['room_type']}]"
                 )
 
-                schedule[timeslot_labels[ts]].append(entry)
+                schedule[TIMESLOT_LABELS[ts]].append(entry)
 
-            for time in timeslot_labels:
+            for time in TIMESLOT_LABELS:
                 st.markdown(f"**Time Slot {time}**")
                 if not schedule[time]:
                     st.write("  - Free")
