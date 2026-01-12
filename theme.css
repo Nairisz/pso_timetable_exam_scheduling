@@ -1,47 +1,114 @@
-/* Main app background */
+/* =========================
+   DEFAULT (LIGHT MODE)
+   ========================= */
+
 .stApp {
-    background-color: #0F1E17;
-    color: #E3F2EB;
+    background-color: #F3F9F4;
+    color: #2F5D50;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #162A22;
-    color: #E3F2EB;
+    background-color: #E6F4EA;
+    color: #2F5D50;
 }
 
 /* Metric cards */
 div[data-testid="metric-container"] {
-    background-color: #162A22;
-    border: 1px solid #25493B;
+    background-color: #E6F4EA;
+    border: 1px solid #CFE8D8;
     padding: 15px;
     border-radius: 12px;
 }
 
 /* Headings */
 h1, h2, h3, h4 {
-    color: #CDE9DD;
-}
-
-/* Normal text */
-p, li, span, label {
-    color: #E3F2EB;
+    color: #2F5D50;
 }
 
 /* Buttons */
 button[kind="primary"] {
-    background-color: #7FBFA3;
-    color: #0F1E17;
+    background-color: #8BC9A4;
+    color: #1F3D34;
     border-radius: 10px;
     border: none;
     font-weight: 600;
 }
 
 button[kind="primary"]:hover {
-    background-color: #6BAF94;
-    color: #0F1E17;
+    background-color: #7BBE96;
 }
 
 /* Expander */
 details {
-    background-color: #
+    background-color: #E6F4EA;
+    border-radius: 10px;
+    padding: 8px;
+    border: 1px solid #CFE8D8;
+}
+
+/* Tables */
+.stDataFrame {
+    background-color: #F3F9F4;
+}
+
+
+/* =========================
+   DARK MODE
+   ========================= */
+
+@media (prefers-color-scheme: dark) {
+
+    .stApp {
+        background-color: #0F1E17;
+        color: #E3F2EB;
+    }
+
+    section[data-testid="stSidebar"] {
+        background-color: #162A22;
+        color: #E3F2EB;
+    }
+
+    div[data-testid="metric-container"] {
+        background-color: #162A22;
+        border: 1px solid #25493B;
+    }
+
+    h1, h2, h3, h4 {
+        color: #CDE9DD;
+    }
+
+    p, li, span, label {
+        color: #E3F2EB;
+    }
+
+    button[kind="primary"] {
+        background-color: #7FBFA3;
+        color: #0F1E17;
+    }
+
+    button[kind="primary"]:hover {
+        background-color: #6BAF94;
+    }
+
+    details {
+        background-color: #162A22;
+        border: 1px solid #25493B;
+    }
+
+    .stDataFrame {
+        background-color: #0F1E17;
+        color: #E3F2EB;
+    }
+
+    thead tr th {
+        background-color: #162A22 !important;
+        color: #CDE9DD !important;
+    }
+
+    input, textarea {
+        background-color: #162A22 !important;
+        color: #E3F2EB !important;
+        border: 1px solid #25493B !important;
+    }
+}
