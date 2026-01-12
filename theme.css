@@ -1,36 +1,43 @@
 /* =========================
-   LIGHT MODE (TRUE LIGHT)
+   DARK MODE ONLY THEME
+   Palette-based
    ========================= */
 
+/* App background */
 .stApp {
-    background-color: #F7F9FA;
-    color: #24333A;
+    background-color: #1E2F34;
+    color: #FFF7DD;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #FFFFFF;
-    color: #24333A;
-    border-right: 1px solid #D6E4EA;
-}
-
-/* Cards / metrics */
-div[data-testid="metric-container"] {
-    background-color: #FFFFFF;
-    border: 1px solid #D6E4EA;
-    padding: 15px;
-    border-radius: 12px;
+    background-color: #243A40;
+    color: #FFF7DD;
+    border-right: 1px solid #80A1BA;
 }
 
 /* Headings */
 h1, h2, h3, h4 {
-    color: #2E5561;
+    color: #B4DEBD;
+}
+
+/* Normal text */
+p, li, span, label {
+    color: #FFF7DD;
+}
+
+/* Metric cards */
+div[data-testid="metric-container"] {
+    background-color: #243A40;
+    border: 1px solid #80A1BA;
+    padding: 15px;
+    border-radius: 12px;
 }
 
 /* Buttons */
 button[kind="primary"] {
     background-color: #91C4C3;
-    color: #1E3338;
+    color: #1E2F34;
     border-radius: 10px;
     border: none;
     font-weight: 600;
@@ -38,79 +45,32 @@ button[kind="primary"] {
 
 button[kind="primary"]:hover {
     background-color: #80A1BA;
+    color: #1E2F34;
 }
 
-/* Expander */
+/* Expanders */
 details {
-    background-color: #FFFFFF;
+    background-color: #243A40;
     border-radius: 10px;
     padding: 8px;
-    border: 1px solid #D6E4EA;
+    border: 1px solid #80A1BA;
 }
 
 /* Tables */
 .stDataFrame {
-    background-color: #FFFFFF;
-    color: #24333A;
+    background-color: #1E2F34;
+    color: #FFF7DD;
 }
 
+/* Table headers */
+thead tr th {
+    background-color: #243A40 !important;
+    color: #B4DEBD !important;
+}
 
-/* =========================
-   DARK MODE (YOUR SCREENSHOT VIBE)
-   ========================= */
-
-@media (prefers-color-scheme: dark) {
-
-    .stApp {
-        background-color: #1E2F34;
-        color: #E6F2EF;
-    }
-
-    section[data-testid="stSidebar"] {
-        background-color: #243A40;
-        color: #E6F2EF;
-    }
-
-    div[data-testid="metric-container"] {
-        background-color: #243A40;
-        border: 1px solid #3A5F68;
-    }
-
-    h1, h2, h3, h4 {
-        color: #B4DEBD;
-    }
-
-    p, li, span, label {
-        color: #E6F2EF;
-    }
-
-    button[kind="primary"] {
-        background-color: #91C4C3;
-        color: #1E2F34;
-    }
-
-    button[kind="primary"]:hover {
-        background-color: #80A1BA;
-    }
-
-    details {
-        background-color: #243A40;
-        border: 1px solid #3A5F68;
-    }
-
-    .stDataFrame {
-        background-color: #1E2F34;
-        color: #E6F2EF;
-    }
-
-    thead tr th {
-        background-color: #243A40 !important;
-        color: #B4DEBD !important;
-    }
-
-    input, textarea {
-        background-color: #243A40 !important;
-        color: #E6F2EF !important;
-        border: 1px solid #3A5F68 !important;
-    }
+/* Inputs & sliders */
+input, textarea {
+    background-color: #243A40 !important;
+    color: #FFF7DD !important;
+    border: 1px solid #80A1BA !important;
 }
