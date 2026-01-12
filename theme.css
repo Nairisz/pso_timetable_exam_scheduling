@@ -3,19 +3,19 @@
    ========================= */
 
 .stApp {
-    background-color: #F3F9F4;
+    background-color: #CB9DF0;
     color: #2F5D50;
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"] {
-    background-color: #E6F4EA;
+    background-color: #F0C1E1;
     color: #2F5D50;
 }
 
 /* Metric cards */
 div[data-testid="metric-container"] {
-    background-color: #E6F4EA;
+    background-color: #F0C1E1;
     border: 1px solid #CFE8D8;
     padding: 15px;
     border-radius: 12px;
@@ -28,7 +28,7 @@ h1, h2, h3, h4 {
 
 /* Buttons */
 button[kind="primary"] {
-    background-color: #8BC9A4;
+    background-color: #FDDBBB;
     color: #1F3D34;
     border-radius: 10px;
     border: none;
@@ -41,7 +41,7 @@ button[kind="primary"]:hover {
 
 /* Expander */
 details {
-    background-color: #E6F4EA;
+    background-color: #F0C1E1;
     border-radius: 10px;
     padding: 8px;
     border: 1px solid #CFE8D8;
