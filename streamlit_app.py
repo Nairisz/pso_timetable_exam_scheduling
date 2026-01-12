@@ -224,9 +224,12 @@ if run:
         if total_capacity_used > 0 else 0
     )
 
-    left_spacer, col5, col6, right_spacer = st.columns([1, 2, 2, 1])
+    col5, col6, col7 = st.columns(3)
+
     col5.metric("Capacity Violations", capacity_violations)
-    col6.metric("Wasted Capacity Ratio", f"{wasted_capacity_ratio*100:.2f}%")
+    col6.metric("Wasted Seats", f"{total_wasted_capacity}")
+    col7.metric("Wasted Capacity Ratio", f"{wasted_capacity_ratio*100:.2f}%")
+
 
     # -------- Text-style Timetable --------
     st.subheader("🗓️ Final Exam Schedule")
