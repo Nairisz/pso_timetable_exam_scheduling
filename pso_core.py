@@ -82,7 +82,6 @@ def fitness_multiobj(solution, exams, rooms, num_timeslots):
             penalty_constraints += 10
 
         schedule_map.add((timeslot, room))
-        timeslot_set.add(timeslot)
         room_usage[room] += students
 
     penalty_util = np.var(room_usage / np.sum(room_usage)) if np.sum(room_usage) > 0 else 0
