@@ -65,7 +65,7 @@ These do not invalidate a solution but influence its quality:
 ---
 
 ### 🧮 Fitness Function Overview
-The total fitness value is computed as:
+The total fitness value is computed as:    
 **Fitness = Hard Constraint Penalties + Room Utilization Variance**
 
 Lower fitness values indicate better scheduling solutions.
