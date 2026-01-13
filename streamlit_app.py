@@ -48,11 +48,9 @@ Violations of these rules are strongly penalized:
 
 1. **Room Capacity Constraint**  
    - An exam must not be assigned to a room with insufficient seating.
-
 2. **Room-Type Compatibility**
    - Practical exams must be scheduled in **laboratories**.
    - Theory exams should not occupy laboratory rooms.
-
 3. **Room–Timeslot Conflict**
    - A room cannot host more than one exam in the same timeslot.
 
@@ -69,7 +67,7 @@ These do not invalidate a solution but influence its quality:
 ### 🧮 Fitness Function Overview
 The total fitness value is computed as:
 
----> Fitness = Hard Constraint Penalties + Room Utilization Variance
+**Fitness = Hard Constraint Penalties + Room Utilization Variance**
 
 Lower fitness values indicate better scheduling solutions.
 """)
