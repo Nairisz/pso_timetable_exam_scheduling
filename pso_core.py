@@ -44,7 +44,6 @@ def fitness_multiobj(solution, exams, rooms, num_timeslots):
     num_rooms = len(rooms)
 
     penalty_constraints = 0
-    timeslot_set = set()
     room_usage = np.zeros(num_rooms)
     schedule_map = set()
 
@@ -86,10 +85,10 @@ def fitness_multiobj(solution, exams, rooms, num_timeslots):
         timeslot_set.add(timeslot)
         room_usage[room] += students
 
-    penalty_timeslot = 3 * len(timeslot_set)
     penalty_util = np.var(room_usage / np.sum(room_usage)) if np.sum(room_usage) > 0 else 0
+    total_fitness = penalty_constraints + penalty_util
 
-    total_fitness = penalty_constraints + penalty_timeslot + penalty_util
+
     return total_fitness, penalty_constraints
 
 
@@ -117,6 +116,7 @@ def run_pso(
     particles = np.random.rand(num_particles, dimensions)
     velocities = np.zeros_like(particles)
 
+    # Scale particles
     for p in range(num_particles):
         for i in range(num_exams):
             particles[p][2*i] *= num_timeslots
@@ -134,6 +134,7 @@ def run_pso(
 
     convergence = []
 
+    # ===== PSO loop =====
     for _ in range(iterations):
         for i in range(num_particles):
             r1, r2 = random.random(), random.random()
@@ -157,13 +158,35 @@ def run_pso(
         convergence.append(gbest_fit)
 
     runtime = time.time() - start_time
-    _, violations = fitness_multiobj(gbest, exams, rooms, num_timeslots)
-    accuracy = max(0, 1 - violations / (num_exams * 10))
+
+    # ===== Accuracy calculation (INSIDE run_pso) =====
+    _, total_violations = fitness_multiobj(gbest, exams, rooms, num_timeslots)
+
+    constraint_accuracy = 1 - (total_violations / (num_exams * 10))
+    constraint_accuracy = max(0, constraint_accuracy)
+
+    room_usage = np.zeros(num_rooms)
+    for i in range(num_exams):
+        room = int(np.clip(round(gbest[2*i + 1]), 0, num_rooms - 1))
+        room_usage[room] += exams.iloc[i]["num_students"]
+
+    if np.sum(room_usage) > 0:
+        utilization_penalty = np.var(room_usage / np.sum(room_usage))
+        utilization_accuracy = 1 / (1 + utilization_penalty)
+    else:
+        utilization_accuracy = 1
+
+    final_accuracy = (
+        0.7 * constraint_accuracy +
+        0.3 * utilization_accuracy
+    )
 
     return {
         "solution": gbest,
         "fitness": gbest_fit,
-        "accuracy": accuracy,
+        "constraint_accuracy": constraint_accuracy,
+        "utilization_accuracy": utilization_accuracy,
+        "accuracy": final_accuracy,
         "runtime": runtime,
         "convergence": convergence
     }
