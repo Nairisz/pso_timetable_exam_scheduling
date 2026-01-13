@@ -301,7 +301,7 @@ if run:
     days = exams["exam_day"].unique()
 
     for day in days:
-        with st.expander(f"Exam Schedule for Day {day}", expanded=True):
+        with st.expander(f"Exam Schedule for {day}", expanded=True):
 
             schedule_map = set()
             schedule = {t: [] for t in timeslot_labels}
