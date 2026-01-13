@@ -31,6 +31,49 @@ In this system:
 - Runtime reflects the trade-off between solution quality and computation time.
 """)
 
+with st.expander("📌 Optimization Objectives & Rules", expanded=False):
+    st.markdown("""
+### 🎯 Optimization Goal
+The goal of this system is to **minimize the overall scheduling cost** while satisfying
+exam timetabling constraints.
+
+The optimization objective combines:
+- **Hard constraint penalties** (must be avoided)
+- **Room utilization efficiency** (soft objective)
+
+---
+
+### ❌ Hard Constraints (High Penalty)
+Violations of these rules are strongly penalized:
+
+1. **Room Capacity Constraint**  
+   - An exam must not be assigned to a room with insufficient seating.
+
+2. **Room-Type Compatibility**
+   - Practical exams must be scheduled in **laboratories**.
+   - Theory exams should not occupy laboratory rooms.
+
+3. **Room–Timeslot Conflict**
+   - A room cannot host more than one exam in the same timeslot.
+
+---
+
+### ⚖️ Soft Objective (Optimization Preference)
+These do not invalidate a solution but influence its quality:
+
+- **Room Utilization Balance**
+  - Reduce wasted seats by distributing students efficiently across rooms.
+
+---
+
+### 🧮 Fitness Function Overview
+The total fitness value is computed as:
+
+---> Fitness = Hard Constraint Penalties + Room Utilization Variance
+
+Lower fitness values indicate better scheduling solutions.
+""")
+
 @st.cache_data
 def load_data():
     exams = pd.read_csv("exam_timeslot.csv")
