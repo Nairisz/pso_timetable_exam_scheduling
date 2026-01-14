@@ -101,18 +101,29 @@ c2 = st.sidebar.slider("Social Coefficient (c2)", 0.5, 3.0, 1.5, 0.1)
 run = st.sidebar.button("🚀 Run PSO")
 
 # ================= Run PSO =================
-if run:
-    with st.spinner("Optimizing timetable..."):
-        result = run_pso(
-            exams,
-            rooms,
-            num_particles,
-            iterations,
-            w,
-            c1,
-            c2
-        )
+progress_bar = st.progress(0)
+status_text = st.empty()
 
+    def update_progress(p):
+        progress_bar.progress(p)
+        status_text.text(f"Running PSO... {int(p * 100)}%")
+
+    result = run_pso(
+        exams,
+        rooms,
+        num_particles,
+        iterations,
+        num_timeslots,
+        w,
+        c1,
+        c2,
+        progress_callback=update_progress
+    )
+
+    progress_bar.empty()
+    status_text.empty()
+
+    solution = result["solution"
     st.success("Optimization completed")
 
     # ================= Metrics =================
