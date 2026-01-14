@@ -143,7 +143,7 @@ def run_pso(
     convergence = []
 
     # ===== PSO main loop =====
-    for _ in range(iterations):
+    for it in range(iterations):
         for i in range(num_particles):
             r1, r2 = random.random(), random.random()
 
@@ -166,10 +166,10 @@ def run_pso(
                     gbest_fit = fit
 
         convergence.append(gbest_fit)
-        
+
         # ✅ Progress update
         if progress_callback:
-        progress_callback((it + 1) / iterations)
+            progress_callback((it + 1) / iterations)
 
     runtime = time.time() - start_time
 
