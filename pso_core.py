@@ -3,19 +3,25 @@ import random
 import time
 
 # =========================
-# Repair Function
+# Repair Function (ROOM ONLY)
 # =========================
-def repair_solution(timeslot, room, exam_idx, exams, rooms, num_timeslots, schedule_map):
+def repair_solution(room, exam_idx, exams, rooms, schedule_map):
     students = exams.iloc[exam_idx]["num_students"]
     exam_type = exams.iloc[exam_idx]["exam_type"].lower()
+    day = exams.iloc[exam_idx]["exam_day"]
+    time_slot = exams.iloc[exam_idx]["exam_time"]
+
     num_rooms = len(rooms)
 
+    # ---- Capacity repair ----
     if students > rooms.iloc[room]["capacity"]:
         feasible = rooms[rooms["capacity"] >= students].index.tolist()
         if feasible:
             room = random.choice(feasible)
 
+    # ---- Room type repair ----
     room_type = rooms.iloc[room]["room_type"].lower()
+
     if exam_type == "practical" and "lab" not in room_type:
         labs = rooms[rooms["room_type"].str.lower().str.contains("lab")].index.tolist()
         if labs:
@@ -26,49 +32,53 @@ def repair_solution(timeslot, room, exam_idx, exams, rooms, num_timeslots, sched
         if non_labs:
             room = random.choice(non_labs)
 
-    if (timeslot, room) in schedule_map:
-        free_rooms = [r for r in range(num_rooms) if (timeslot, r) not in schedule_map]
+    # ---- Clash repair (same day, same time, same room) ----
+    key = (day, time_slot, room)
+    if key in schedule_map:
+        free_rooms = [
+            r for r in range(num_rooms)
+            if (day, time_slot, r) not in schedule_map
+        ]
         if free_rooms:
             room = random.choice(free_rooms)
-        else:
-            timeslot = (timeslot + 1) % num_timeslots
 
-    return timeslot, room
+    return room
 
 
 # =========================
 # Fitness Function
 # =========================
-def fitness_multiobj(solution, exams, rooms, num_timeslots):
+def fitness_multiobj(solution, exams, rooms):
     num_exams = len(exams)
     num_rooms = len(rooms)
 
     penalty_constraints = 0
     room_usage = np.zeros(num_rooms)
-    schedule_map = set()
+    schedule_map = set()  # (day, time, room)
 
     for i in range(num_exams):
-        timeslot = int(np.clip(round(solution[2*i]), 0, num_timeslots - 1))
-        room = int(np.clip(round(solution[2*i + 1]), 0, num_rooms - 1))
+        room = int(np.clip(round(solution[i]), 0, num_rooms - 1))
 
         students = exams.iloc[i]["num_students"]
         exam_type = exams.iloc[i]["exam_type"].lower()
-        room_type = rooms.iloc[room]["room_type"].lower()
-        capacity = rooms.iloc[room]["capacity"]
+        day = exams.iloc[i]["exam_day"]
+        time_slot = exams.iloc[i]["exam_time"]
+
+        room_info = rooms.iloc[room]
+        capacity = room_info["capacity"]
+        room_type = room_info["room_type"].lower()
 
         needs_repair = (
             students > capacity or
             (exam_type == "practical" and "lab" not in room_type) or
             (exam_type == "theory" and "lab" in room_type) or
-            ((timeslot, room) in schedule_map)
+            ((day, time_slot, room) in schedule_map)
         )
 
         if needs_repair:
-            timeslot, room = repair_solution(
-                timeslot, room, i, exams, rooms, num_timeslots, schedule_map
-            )
+            room = repair_solution(room, i, exams, rooms, schedule_map)
 
-        # penalties
+        # ---- Hard constraint penalties ----
         if students > rooms.iloc[room]["capacity"]:
             penalty_constraints += 5
 
@@ -78,16 +88,21 @@ def fitness_multiobj(solution, exams, rooms, num_timeslots):
         if exam_type == "theory" and "lab" in rooms.iloc[room]["room_type"].lower():
             penalty_constraints += 2
 
-        if (timeslot, room) in schedule_map:
+        key = (day, time_slot, room)
+        if key in schedule_map:
             penalty_constraints += 10
+        else:
+            schedule_map.add(key)
 
-        schedule_map.add((timeslot, room))
         room_usage[room] += students
 
-    penalty_util = np.var(room_usage / np.sum(room_usage)) if np.sum(room_usage) > 0 else 0
+    # ---- Soft objective: utilization variance ----
+    penalty_util = (
+        np.var(room_usage / np.sum(room_usage))
+        if np.sum(room_usage) > 0 else 0
+    )
+
     total_fitness = penalty_constraints + penalty_util
-
-
     return total_fitness, penalty_constraints
 
 
@@ -99,7 +114,6 @@ def run_pso(
     rooms,
     num_particles,
     iterations,
-    num_timeslots,
     w,
     c1,
     c2
@@ -110,20 +124,14 @@ def run_pso(
 
     num_exams = len(exams)
     num_rooms = len(rooms)
-    dimensions = num_exams * 2
 
-    particles = np.random.rand(num_particles, dimensions)
+    # ---- ROOM-ONLY encoding ----
+    particles = np.random.rand(num_particles, num_exams) * num_rooms
     velocities = np.zeros_like(particles)
-
-    # Scale particles
-    for p in range(num_particles):
-        for i in range(num_exams):
-            particles[p][2*i] *= num_timeslots
-            particles[p][2*i + 1] *= num_rooms
 
     pbest = particles.copy()
     pbest_fit = np.array([
-        fitness_multiobj(p, exams, rooms, num_timeslots)[0]
+        fitness_multiobj(p, exams, rooms)[0]
         for p in particles
     ])
 
@@ -133,18 +141,20 @@ def run_pso(
 
     convergence = []
 
-    # ===== PSO loop =====
+    # ===== PSO main loop =====
     for _ in range(iterations):
         for i in range(num_particles):
             r1, r2 = random.random(), random.random()
+
             velocities[i] = (
                 w * velocities[i]
                 + c1 * r1 * (pbest[i] - particles[i])
                 + c2 * r2 * (gbest - particles[i])
             )
+
             particles[i] += velocities[i]
 
-            fit, _ = fitness_multiobj(particles[i], exams, rooms, num_timeslots)
+            fit, _ = fitness_multiobj(particles[i], exams, rooms)
 
             if fit < pbest_fit[i]:
                 pbest[i] = particles[i].copy()
@@ -158,27 +168,24 @@ def run_pso(
 
     runtime = time.time() - start_time
 
-    # ===== Accuracy calculation (INSIDE run_pso) =====
-    _, total_violations = fitness_multiobj(gbest, exams, rooms, num_timeslots)
+    # ===== Accuracy Calculation =====
+    _, total_violations = fitness_multiobj(gbest, exams, rooms)
 
-    constraint_accuracy = 1 - (total_violations / (num_exams * 10))
-    constraint_accuracy = max(0, constraint_accuracy)
+    constraint_accuracy = max(
+        0, 1 - total_violations / (num_exams * 10)
+    )
 
     room_usage = np.zeros(num_rooms)
     for i in range(num_exams):
-        room = int(np.clip(round(gbest[2*i + 1]), 0, num_rooms - 1))
+        room = int(np.clip(round(gbest[i]), 0, num_rooms - 1))
         room_usage[room] += exams.iloc[i]["num_students"]
 
-    if np.sum(room_usage) > 0:
-        utilization_penalty = np.var(room_usage / np.sum(room_usage))
-        utilization_accuracy = 1 / (1 + utilization_penalty)
-    else:
-        utilization_accuracy = 1
-
-    final_accuracy = (
-        0.7 * constraint_accuracy +
-        0.3 * utilization_accuracy
+    utilization_accuracy = (
+        1 / (1 + np.var(room_usage / np.sum(room_usage)))
+        if np.sum(room_usage) > 0 else 1
     )
+
+    final_accuracy = 0.7 * constraint_accuracy + 0.3 * utilization_accuracy
 
     return {
         "solution": gbest,
