@@ -165,6 +165,10 @@ def run_pso(
                     gbest_fit = fit
 
         convergence.append(gbest_fit)
+        
+        # ✅ Progress update
+        if progress_callback:
+        progress_callback((it + 1) / iterations)
 
     runtime = time.time() - start_time
 
