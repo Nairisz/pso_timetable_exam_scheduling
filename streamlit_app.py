@@ -113,7 +113,6 @@ status_text = st.empty()
         rooms,
         num_particles,
         iterations,
-        num_timeslots,
         w,
         c1,
         c2,
@@ -123,7 +122,7 @@ status_text = st.empty()
     progress_bar.empty()
     status_text.empty()
 
-    solution = result["solution"
+    solution = result["solution"]
     st.success("Optimization completed")
 
     # ================= Metrics =================
