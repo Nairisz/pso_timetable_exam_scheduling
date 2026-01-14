@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pso_core import run_pso
+import random
 
 # ================= Page setup =================
 st.set_page_config(layout="wide")
@@ -79,7 +80,6 @@ with st.expander("View dataset summary", expanded=True):
         st.write(f"**Total Rooms:** {len(rooms)}")
         for k, v in rooms["room_type"].value_counts().items():
             st.write(f"• {k}: {v}")
-
         st.write(f"**Total Seats Available:** {rooms['capacity'].sum()}")
 
     st.markdown("---")
@@ -101,30 +101,30 @@ c2 = st.sidebar.slider("Social Coefficient (c2)", 0.5, 3.0, 1.5, 0.1)
 run = st.sidebar.button("🚀 Run PSO")
 
 # ================= Run PSO =================
-progress_bar = st.progress(0)
-status_text = st.empty()
+if run:
+    progress_bar = st.progress(0)
+    status_text = st.empty()
 
-def update_progress(p):
-    progress_bar.progress(p)
-    status_text.text(f"Running PSO... {int(p * 100)}%")
+    def update_progress(p):
+        progress_bar.progress(p)
+        status_text.text(f"Running PSO... {int(p * 100)}%")
 
-result = run_pso(
-    exams,
-    rooms,
-    num_particles,
-    iterations,
-    w,
-    c1,
-    c2,
-    progress_callback=update_progress
-)
+    result = run_pso(
+        exams,
+        rooms,
+        num_particles,
+        iterations,
+        w,
+        c1,
+        c2,
+        progress_callback=update_progress
+    )
 
-progress_bar.empty()
-status_text.empty()
+    progress_bar.empty()
+    status_text.empty()
 
-solution = result["solution"]
-st.success("Optimization completed")
-
+    solution = result["solution"]
+    st.success("Optimization completed")
 
     # ================= Metrics =================
     curve = np.array(result["convergence"])
@@ -146,8 +146,6 @@ st.success("Optimization completed")
     st.pyplot(fig)
 
     # ================= Capacity metrics =================
-    solution = result["solution"]
-
     capacity_violations = 0
     wasted_seats = 0
     used_seats = 0
@@ -166,48 +164,46 @@ st.success("Optimization completed")
     col5, col6, col7 = st.columns(3)
     col5.metric("Capacity Violations", capacity_violations)
     col6.metric("Wasted Seats", wasted_seats)
-    col7.metric("Wasted Capacity Ratio", f"{wasted_seats/(used_seats+wasted_seats)*100:.2f}%")
+    col7.metric(
+        "Wasted Capacity Ratio",
+        f"{wasted_seats/(used_seats+wasted_seats)*100:.2f}%"
+    )
 
-   # ================= Final Timetable =================
-st.subheader("🗓️ Final Exam Schedule")
+    # ================= Final Timetable =================
+    st.subheader("🗓️ Final Exam Schedule")
 
-for day in exams["exam_day"].unique():
-    with st.expander(f"Day {day}", expanded=True):
+    for day in exams["exam_day"].unique():
+        with st.expander(f"Day {day}", expanded=True):
 
-        exams_day = exams[exams["exam_day"] == day]
+            exams_day = exams[exams["exam_day"] == day]
 
-        for _, row in exams_day.iterrows():
-            idx = exams.index[exams["exam_id"] == row["exam_id"]][0]
+            for _, row in exams_day.iterrows():
+                idx = exams.index[exams["exam_id"] == row["exam_id"]][0]
 
-            # PSO decides ROOM only (timeslot is fixed from dataset)
-            room_idx = int(np.clip(round(solution[idx]), 0, len(rooms) - 1))
+                room_idx = int(np.clip(round(solution[idx]), 0, len(rooms) - 1))
+                exam_type = row["exam_type"].lower()
+                room_type = rooms.iloc[room_idx]["room_type"].lower()
 
-            exam_type = row["exam_type"].lower()
-            room_type = rooms.iloc[room_idx]["room_type"].lower()
+                # ===== HARD ENFORCEMENT =====
+                if exam_type == "practical" and "lab" not in room_type:
+                    lab_rooms = rooms[
+                        rooms["room_type"].str.lower().str.contains("lab")
+                    ].index.tolist()
+                    if lab_rooms:
+                        room_idx = random.choice(lab_rooms)
 
-            # ===== HARD ENFORCEMENT =====
-            # Practical → Lab
-            if exam_type == "practical" and "lab" not in room_type:
-                lab_rooms = rooms[
-                    rooms["room_type"].str.lower().str.contains("lab")
-                ].index.tolist()
-                if lab_rooms:
-                    room_idx = random.choice(lab_rooms)
+                if exam_type == "theory" and "lab" in room_type:
+                    non_lab_rooms = rooms[
+                        ~rooms["room_type"].str.lower().str.contains("lab")
+                    ].index.tolist()
+                    if non_lab_rooms:
+                        room_idx = random.choice(non_lab_rooms)
 
-            # Theory → Non-lab
-            if exam_type == "theory" and "lab" in room_type:
-                non_lab_rooms = rooms[
-                    ~rooms["room_type"].str.lower().str.contains("lab")
-                ].index.tolist()
-                if non_lab_rooms:
-                    room_idx = random.choice(non_lab_rooms)
+                room = rooms.iloc[room_idx]
 
-            room = rooms.iloc[room_idx]
-
-            # ===== DISPLAY =====
-            st.write(
-                f"**{row['exam_id']} | {row['course_code']} | {row['exam_type']}**  \n"
-                f"Room: {room['building_name']} {room['room_number']} "
-                f"({room['room_type']})  \n"
-                f"Time: {row['exam_time']}"
-            )
+                st.write(
+                    f"**{row['exam_id']} | {row['course_code']} | {row['exam_type']}**  \n"
+                    f"Room: {room['building_name']} {room['room_number']} "
+                    f"({room['room_type']})  \n"
+                    f"Time: {row['exam_time']}"
+                )
