@@ -104,26 +104,27 @@ run = st.sidebar.button("🚀 Run PSO")
 progress_bar = st.progress(0)
 status_text = st.empty()
 
-    def update_progress(p):
-        progress_bar.progress(p)
-        status_text.text(f"Running PSO... {int(p * 100)}%")
+def update_progress(p):
+    progress_bar.progress(p)
+    status_text.text(f"Running PSO... {int(p * 100)}%")
 
-    result = run_pso(
-        exams,
-        rooms,
-        num_particles,
-        iterations,
-        w,
-        c1,
-        c2,
-        progress_callback=update_progress
-    )
+result = run_pso(
+    exams,
+    rooms,
+    num_particles,
+    iterations,
+    w,
+    c1,
+    c2,
+    progress_callback=update_progress
+)
 
-    progress_bar.empty()
-    status_text.empty()
+progress_bar.empty()
+status_text.empty()
 
-    solution = result["solution"]
-    st.success("Optimization completed")
+solution = result["solution"]
+st.success("Optimization completed")
+
 
     # ================= Metrics =================
     curve = np.array(result["convergence"])
