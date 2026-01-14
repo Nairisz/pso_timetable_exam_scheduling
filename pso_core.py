@@ -116,7 +116,8 @@ def run_pso(
     iterations,
     w,
     c1,
-    c2
+    c2,
+    progress_callback=None
 ):
     np.random.seed(42)
     random.seed(42)
