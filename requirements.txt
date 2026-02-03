@@ -1,5 +1,5 @@
 matplotlib
 numpy
 pandas
-streamlit==1.30.0
+streamlit
 altair==4.2.2
